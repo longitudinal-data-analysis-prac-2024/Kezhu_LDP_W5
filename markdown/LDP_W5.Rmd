@@ -1,0 +1,105 @@
+---
+title: "W5_Longitudinal Data Practical Assignment"
+author: "KezhuNiu"
+date: "2024-02-08"
+output: html_document
+---
+# **Problem 1**\
+## 1. Load Packages and Explore Dataset
+```{r dataread1, include=TRUE}
+library(tidyverse)
+anscombe_quartet = readRDS("../datasets/anscombe_quartet.rds")
+str(anscombe_quartet)
+```
+### What does the function str() do? 
+str function displays the structure of a dataset, an alternative to summary 
+
+## 2. Summary Statistics
+```{r datasummary1, include = TRUE}
+anscombe_quartet %>% 
+  group_by(dataset) %>% 
+  summarise(
+    mean_x    = mean(x),
+    mean_y    = mean(y),
+    min_x     = min(x),
+    min_y     = min(y),
+    max_x     = max(x),
+    max_y     = max(y),
+    crrltn    = cor(x, y)
+  )
+```
+### What do the summary statistics tell us about the different datasets? 
+The summary statistics show the means, minimums, maximums and correlation coefficients of x and y values for each of the four datasets. There seem to be positive correlations in all datasets. 
+
+## 3. Plot the dataset
+```{r plotdataset1, include = TRUE}
+ ggplot(anscombe_quartet, aes(x=x,y=y)) +
+  geom_point() + 
+  geom_smooth(method = "lm",formula = "y ~ x") +
+  facet_wrap(~dataset)
+```
+
+## 4. Save the plot
+```{r saveplot1, include = TRUE}
+ggsave("anscombe_quartet.png", width = 20, height = 20, units = "cm")
+```
+
+### What do the plots tell us about the different datasets?\
+The distribution of data points in the four datasets are different. Data in the first and the third datasets are linear, but the first dataset has a larger variance (than the third dataset). dataset 2 is a polynormial and dataset 4 all values are the same except for one outlier. 
+
+### Describe the relationship between x and y in the different datasets\
+Positive correlation in dataset 1 and 3, polynormial in dataset 2, pseudo-correlation in dataset 4 
+
+### Would linear regression be an appropriate statistical model to analyse the x-y relationship in each dataset?\
+Linear regression would be appropriate for analyzing dataset 1 and 3 but not 2 and 4
+
+### What conclusions can you draw for the plots and summary statistics?\
+Distribution of data within each dataset is not consistent with the summary statistics. Dataset 1 and 3 show linear positive correlations, but dataset 2 and 4 are non-linear distributions. So we cannot infer the distribution of a whole dataset based only on its summary statistics. 
+
+# **Problem 2**\
+## 1. Explore Dataset 
+```{r readdata2, include=TRUE}
+library(tidyverse)
+datasaurus_dozen <- readRDS("../datasets/datasaurus_dozen.rds")
+```
+```{r exploredata2, include = TRUE}
+glimpse(datasaurus_dozen)
+```
+### How many rows and columns does the datasaurus_dozen file have? 
+1846 rows and 3 columns 
+
+## 2. Plot the dataset
+```{r plotdata2, include = TRUE}
+ggplot(datasaurus_dozen, aes(x=x, y=y)) + 
+  geom_point() +
+  geom_smooth(method = "lm", formula = "y~x")
+```
+
+## 3. Calculate the correlations and summary statistics for x and y in all datasets
+```{r summarydata2, inlcude = TRUE}
+datasaurus_dozen %>%
+   group_by(dataset) %>%
+  summarise(mean_x = mean(x),
+            mean_y = mean(y),
+            max_x = max(x),
+            max_y = max(y),
+            min_x = min(x),
+            min_y = min(y),
+            cor_x.y = cor(y,x)
+          )
+```
+## 4. Plot the relationships between x and y in each dataset including the line of best fit
+```{r datasetplots2, include=TRUE}
+ggplot(datasaurus_dozen, aes(x=x, y=y)) + 
+  geom_point() +
+  geom_smooth(method = "lm", formula = "y~x") +
+  facet_wrap(~dataset)
+```
+
+## 5. Save the plot
+```{r saveplot2, include = TRUE}
+ggsave("datasaurus.png", width = 20, height = 20, unit = "cm")
+```
+
+### What conclusions can you draw for the plots and summary statistics? 
+Even though all datasets have negative correlations, the distribution of data points in none of the dataset is linear. Therefore, presence of significant correlation might not capture the distribution of the whole dataset, careful check of the distribution of the whole dataset is necessary before any further analysis. 
